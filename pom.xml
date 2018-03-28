@@ -16,16 +16,20 @@
 			<version>7.2.1</version>
 		</dependency>
 		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.7</version>
+		</dependency>
+		<dependency>
 			<groupId>edu.hanyang</groupId>
 			<artifactId>tinyse</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/tinyse-0.0.1-SNAPSHOT.jar</systemPath>
+			<systemPath>${project.basedir}/lib/tinyse-2018.stage_2.build_1.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.12</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
@@ -43,10 +47,21 @@
 			<resource>
 				<directory>src/main/java</directory>
 				<includes>
-                    <include>**/*.java</include>
-                    <include>**/*.gwt.xml</include>
-                </includes>
+					<include>**/*.java</include>
+					<include>**/*.gwt.xml</include>
+				</includes>
 			</resource>
 		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.7.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+		</plugins>
 	</build>
 </project>
