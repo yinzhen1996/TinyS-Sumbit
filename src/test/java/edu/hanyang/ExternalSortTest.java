@@ -26,15 +26,17 @@ public class ExternalSortTest {
 	@Test
 	public void TestSort() throws IOException {
 		int blocksize = 1024;
-		int nblocks = 10;
-		ClassLoader classLoader = getClass().getClassLoader();
+		int nblocks = 160;
+		ClassLoader classLoader = this.getClass().getClassLoader();
 		File infile = new File(classLoader.getResource("test.data").getFile());
-		String outfile = "./sorted.data";
+		String outfile = "./tmp/sorted.data";
 		String tmpdir = "./tmp";
 		File resultFile = new File(outfile);
 		
 		TinySEExternalSort sort = new TinySEExternalSort();
+		long timestamp = System.currentTimeMillis();
 		sort.sort(infile.getAbsolutePath(), outfile, tmpdir, blocksize, nblocks);
+		System.out.println("time duration: " + (System.currentTimeMillis() - timestamp) + " msecs with " + nblocks + " blocks of size " + blocksize + " bytes");
 
 		
 		File answerFile = new File(classLoader.getResource("answer.data").getFile());
