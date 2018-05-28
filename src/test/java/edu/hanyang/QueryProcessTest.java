@@ -16,17 +16,3 @@ public class QueryProcessTest {
 		
 	}
 }
-
-/*
-class TestDocCursor implements DocumentCursor {
-	
-}
-
-class TestPosCursor implements PositionCursor {
-	
-}
-
-class TestIntermediateList implements IntermediateList {
-
-}
-*/
