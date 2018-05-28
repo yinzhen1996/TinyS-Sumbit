@@ -18,15 +18,15 @@ public class QueryProcessTest {
 }
 
 /*
-class TestInvertedFile implements InvertedFile {
-	
-}
-
 class TestDocCursor implements DocumentCursor {
 	
 }
 
 class TestPosCursor implements PositionCursor {
 	
+}
+
+class TestIntermediateList implements IntermediateList {
+
 }
 */
