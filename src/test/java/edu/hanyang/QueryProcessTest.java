@@ -6,17 +6,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Stack;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import edu.hanyang.indexer.DocumentCursor;
-import edu.hanyang.indexer.IntermediateList;
-import edu.hanyang.indexer.IntermediatePositionalList;
-import edu.hanyang.indexer.QueryPlanTree;
-import edu.hanyang.indexer.QueryPlanTree.NODE_TYPE;
-import edu.hanyang.indexer.QueryPlanTree.QueryPlanNode;
 import edu.hanyang.submit.TinySEQueryProcess;
 import edu.hanyang.utils.TestDocCursor;
 import edu.hanyang.utils.TestIntermediateList;
