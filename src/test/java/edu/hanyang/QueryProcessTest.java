@@ -11,6 +11,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import edu.hanyang.indexer.DocumentCursor;
+import edu.hanyang.indexer.IntermediateList;
+import edu.hanyang.indexer.IntermediatePositionalList;
+import edu.hanyang.indexer.QueryPlanTree;
+import edu.hanyang.indexer.QueryPlanTree.NODE_TYPE;
+import edu.hanyang.indexer.QueryPlanTree.QueryPlanNode;
 import edu.hanyang.submit.TinySEQueryProcess;
 import edu.hanyang.utils.TestDocCursor;
 import edu.hanyang.utils.TestIntermediateList;
@@ -26,6 +31,7 @@ public class QueryProcessTest {
 		qp = new TinySEQueryProcess();
 	}
 
+	
 	@Test
 	public void test_op_and_wo_pos() throws IOException {
 		TestDocCursor tdc1 = new TestDocCursor(posList.get(0));
@@ -45,8 +51,7 @@ public class QueryProcessTest {
 		assertEquals(dc.get_docid(), 4);
 		dc.go_next();
 		assertEquals(dc.is_eol(), true);
-		
-		
+
 		tdc1 = new TestDocCursor(posList.get(3));
 		tdc2 = new TestDocCursor(posList.get(6));
 		out = new TestIntermediateList();
@@ -70,7 +75,7 @@ public class QueryProcessTest {
 
 		qp.op_and_w_pos(tdc1, tdc2, 1, out);
 		DocumentCursor dc = new TestDocCursor(out);
-		
+
 		assertEquals(dc.get_docid(), 1);
 		dc.go_next();
 		assertEquals(dc.get_docid(), 2);
@@ -78,8 +83,7 @@ public class QueryProcessTest {
 		assertEquals(dc.get_docid(), 4);
 		dc.go_next();
 		assertEquals(dc.is_eol(), true);
-		
-		
+
 		tdc1 = new TestDocCursor(posList.get(2));
 		tdc2 = new TestDocCursor(posList.get(4));
 		out = new TestIntermediatePositionalList();
@@ -92,6 +96,97 @@ public class QueryProcessTest {
 		assertEquals(dc.get_docid(), 4);
 		dc.go_next();
 		assertEquals(dc.is_eol(), true);
+	}
+
+	@Test
+	public void test_query_plan_tree() throws IOException {
+		String query = "3 5 7";
+		QueryPlanTree tree = qp.parse_query(query);
+
+		DocumentCursor dc = executeQuery(tree.root);
+		assertEquals(dc.get_docid(), 0);
+		dc.go_next();
+		assertEquals(dc.get_docid(), 1);
+		dc.go_next();
+		assertEquals(dc.get_docid(), 2);
+		dc.go_next();
+		assertEquals(dc.get_docid(), 4);
+		dc.go_next();
+		assertEquals(dc.is_eol(), true);
+
+		query = "\"3 4\" 7";
+		tree = qp.parse_query(query);
+
+		dc = executeQuery(tree.root);
+		assertEquals(dc.get_docid(), 1);
+		dc.go_next();
+		assertEquals(dc.get_docid(), 2);
+		dc.go_next();
+		assertEquals(dc.get_docid(), 4);
+		dc.go_next();
+		assertEquals(dc.is_eol(), true);
+	}
+
+	private DocumentCursor executeQuery(QueryPlanNode node) throws IOException {
+		if (node == null) {
+			return null;
+		}
+
+		DocumentCursor left = executeQuery(node.left);
+		DocumentCursor right = executeQuery(node.right);
+
+		if (node.type == NODE_TYPE.OP_AND) {
+			if (left == null || right == null) {
+				throw new IOException("Operation Error : OP_AND is binary operation");
+			}
+			IntermediateList out = new TestIntermediateList();
+			qp.op_and_wo_pos(left, right, out);
+			return new TestDocCursor(out);
+		}
+
+		if (node.type == NODE_TYPE.OP_SHIFTED_AND) {
+			if (left == null || right == null) {
+				throw new IOException("Operation Error : OP_SHIFTED_AND is binary operation");
+			}
+			IntermediatePositionalList out = new TestIntermediatePositionalList();
+			qp.op_and_w_pos(left, right, node.shift, out);
+			return new TestDocCursor(out);
+		}
+
+		if (node.type == NODE_TYPE.OP_REMOVE_POS) {
+			if (left != null && right != null) {
+				throw new IOException("Operation Error : OP_REMOVE_POS is unary operation");
+			}
+
+			if (left != null) {
+				List<Integer> list = removePos(left);
+				return new TestDocCursor(list);
+			}
+			if (right != null) {
+				List<Integer> list = removePos(right);
+				return new TestDocCursor(list);
+			}
+		}
+
+		if (node.type == NODE_TYPE.OPRAND) {
+			if (left != null || right != null) {
+				throw new IOException("Operand Error : OPRAND has no child");
+			}
+
+			return new TestDocCursor(posList.get(node.termid));
+		}
+
+		return null;
+	}
+
+	private List<Integer> removePos(DocumentCursor cursor) throws IOException {
+		List<Integer> list = new ArrayList<>();
+		while (!cursor.is_eol()) {
+			list.add(cursor.get_docid());
+			cursor.go_next();
+		}
+
+		return list;
 	}
 
 	private List<List<Integer>> makePostingList() {
