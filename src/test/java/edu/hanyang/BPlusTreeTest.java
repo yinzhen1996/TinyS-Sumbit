@@ -2,11 +2,14 @@ package edu.hanyang;
  
 import java.io.File;
 import java.io.IOException;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
  
 import edu.hanyang.submit.TinySEBPlusTree;
- 
+
+@Ignore("Delete this line to unit test stage 3")
 public class BPlusTreeTest {
  
 	@Test
