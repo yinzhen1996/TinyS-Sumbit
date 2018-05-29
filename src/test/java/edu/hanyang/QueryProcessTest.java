@@ -99,7 +99,7 @@ public class QueryProcessTest {
 	}
 
 	@Test
-	public void test_query_plan_tree() throws IOException {
+	public void test_query_plan_tree() throws Exception {
 		String query = "3 5 7";
 		QueryPlanTree tree = qp.parse_query(query);
 
@@ -127,7 +127,7 @@ public class QueryProcessTest {
 		assertEquals(dc.is_eol(), true);
 	}
 
-	private DocumentCursor executeQuery(QueryPlanNode node) throws IOException {
+	private DocumentCursor executeQuery(QueryPlanNode node) throws Exception {
 		if (node == null) {
 			return null;
 		}
@@ -137,42 +137,32 @@ public class QueryProcessTest {
 
 		if (node.type == NODE_TYPE.OP_AND) {
 			if (left == null || right == null) {
-				throw new IOException("Operation Error : OP_AND is binary operation");
+				throw new Exception("Operation Error (a null child) : OP_AND is binary operation");
 			}
 			IntermediateList out = new TestIntermediateList();
 			qp.op_and_wo_pos(left, right, out);
 			return new TestDocCursor(out);
 		}
 
-		if (node.type == NODE_TYPE.OP_SHIFTED_AND) {
+		else if (node.type == NODE_TYPE.OP_SHIFTED_AND) {
 			if (left == null || right == null) {
-				throw new IOException("Operation Error : OP_SHIFTED_AND is binary operation");
+				throw new Exception("Operation Error (a null child) : OP_SHIFTED_AND is binary operation");
 			}
 			IntermediatePositionalList out = new TestIntermediatePositionalList();
 			qp.op_and_w_pos(left, right, node.shift, out);
 			return new TestDocCursor(out);
 		}
 
-		if (node.type == NODE_TYPE.OP_REMOVE_POS) {
-			if (left != null && right != null) {
-				throw new IOException("Operation Error : OP_REMOVE_POS is unary operation");
+		else if (node.type == NODE_TYPE.OP_REMOVE_POS) {
+			if (left == null) {
+				throw new IOException("Operation Error (left is null) : OP_REMOVE_POS is unary operation");
 			}
 
-			if (left != null) {
-				List<Integer> list = removePos(left);
-				return new TestDocCursor(list);
-			}
-			if (right != null) {
-				List<Integer> list = removePos(right);
-				return new TestDocCursor(list);
-			}
+			List<Integer> list = removePos(left);
+			return new TestDocCursor(list);
 		}
 
-		if (node.type == NODE_TYPE.OPRAND) {
-			if (left != null || right != null) {
-				throw new IOException("Operand Error : OPRAND has no child");
-			}
-
+		else if (node.type == NODE_TYPE.OPRAND) {
 			return new TestDocCursor(posList.get(node.termid));
 		}
 
