@@ -158,7 +158,7 @@ public class QueryProcessTest {
 				throw new IOException("Operation Error (left is null) : OP_REMOVE_POS is unary operation");
 			}
 
-			List<Integer> list = removePos(left);
+			IntermediateList list = removePos(left);
 			return new TestDocCursor(list);
 		}
 
@@ -169,13 +169,13 @@ public class QueryProcessTest {
 		return null;
 	}
 
-	private List<Integer> removePos(DocumentCursor cursor) throws IOException {
-		List<Integer> list = new ArrayList<>();
+	private IntermediateList removePos(DocumentCursor cursor) throws IOException {
+		IntermediateList list = new TestIntermediateList();
 		while (!cursor.is_eol()) {
-			list.add(cursor.get_docid());
+			list.put_docid(cursor.get_docid());
 			cursor.go_next();
 		}
-
+		
 		return list;
 	}
 
