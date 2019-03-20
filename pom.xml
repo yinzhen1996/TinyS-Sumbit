@@ -25,7 +25,7 @@
 			<artifactId>tinyse</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>system</scope>
-			<systemPath>${project.basedir}/lib/tinyse-2018.stage_4.build_1.jar</systemPath>
+			<systemPath>${project.basedir}/lib/tinyse-2019.stage_1.build_1.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
