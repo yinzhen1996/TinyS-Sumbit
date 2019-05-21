@@ -6,7 +6,7 @@
 # How to submit your project output for each stage
 1. Open <code>pom.xml</code> and change the artifect ID from <code>2016000000</code> to your student ID.
 2. Complete templates:
-   * Stage 1: Complete <code>edu.hanyang.submit.TinySETokenizer.javaM</code>file.
+   * Stage 1: Complete <code>edu.hanyang.submit.TinySETokenizer.java</code>file.
    * Stage 2: Complete <code>edu.hanyang.submit.TinySEExternalSort.java</code> file.
    * Stage 3: Complete <code>edu.hanyang.submit.TinySEBPlusTree.java</code> file.
    * Stage 4: Complete <code>edu.hanyang.submit.TinySEQueryProcess.java</code> file.
