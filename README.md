@@ -1,7 +1,6 @@
 # Team
 
-* name 1: student ID 1
-* name 2: student ID 2
+* <이름>: <학번>
 
 # How to submit your project output for each stage
 1. Open <code>pom.xml</code> and change the artifect ID from <code>2016000000</code> to your student ID.
